@@ -2,21 +2,69 @@
 <html>
 <head>
     <title>Mini Sentrix</title>
+	<style>
+.alta {
+    color: red;
+    font-weight: bold;
+}
+
+.media {
+    color: orange;
+}
+
+.baja {
+    color: green;
+}
+
+.container {
+    font-family: Arial;
+    max-width: 600px;
+    margin: auto;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+</style>
 </head>
 <body>
 
-<h1>Incidentes</h1>
+<div class="container">
+    <h1>🛠 Mini Sentrix</h1>
 
-<form action="/add" method="post">
-    <input type="text" name="title" placeholder="Nuevo incidente">
-    <button type="submit">Agregar</button>
-</form>
+    <form action="/add" method="post">
+        <input type="text" name="title" placeholder="Nuevo incidente">
+        <button type="submit">Agregar</button>
+    </form>
 
-<ul>
+    <hr>
+
     {% for i in incidents %}
-        <li>{{ i[1] }} - {{ i[2] }}</li>
+        <div class="card">
+            <strong>{{ i[1] }}</strong><br>
+
+            Tipo: {{ i[3] }}<br>
+
+            Prioridad:
+            <span class="{{ i[4] }}">{{ i[4] }}</span><br>
+
+            Estado:
+{% if i[2] == "abierto" %}
+    🔴 abierto
+{% elif i[2] == "en_proceso" %}
+    🟡 en proceso
+{% else %}
+    🟢 cerrado
+{% endif %}<br><br>
+
+            <a href="/update/{{ i[0] }}/en_proceso">🔄 En proceso</a>
+            <a href="/update/{{ i[0] }}/cerrado">✅ Cerrar</a>
+        </div>
     {% endfor %}
-</ul>
+</div>
 
 </body>
 </html>

@@ -1,25 +1,23 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
-import requests
 
-API_KEY = ""
-
-def clasificar_incidente(texto):
-    texto = texto.lower()
-
-    if "sql" in texto or "db" in texto:
-        return "tipo: base de datos | prioridad: alta"
-    elif "red" in texto or "internet" in texto:
-        return "tipo: red | prioridad: media"
-    elif "server" in texto or "servidor" in texto:
-        return "tipo: servidor | prioridad: alta"
-    else:
-        return "tipo: otro | prioridad: baja"
-    
 app = Flask(__name__)
 
 def get_db():
     return sqlite3.connect("database.db")
+
+# 🔥 CLASIFICACIÓN BIEN HECHA
+def clasificar_incidente(texto):
+    texto = texto.lower()
+
+    if "sql" in texto or "db" in texto or "base de datos" in texto:
+        return "base de datos", "alta"
+    elif "red" in texto or "internet" in texto:
+        return "red", "media"
+    elif "server" in texto or "servidor" in texto:
+        return "servidor", "alta"
+    else:
+        return "otro", "baja"
 
 @app.route("/")
 def index():
@@ -34,17 +32,26 @@ def index():
 def add_incident():
     title = request.form["title"]
 
-    clasificacion = clasificar_incidente(title)
+    tipo, prioridad = clasificar_incidente(title)
 
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO incidents (title, status) VALUES (?, ?)",
-        (f"{title} | {clasificacion}", "abierto")
+        "INSERT INTO incidents (title, status, tipo, prioridad) VALUES (?, ?, ?, ?)",
+        (title, "abierto", tipo, prioridad)
     )
     conn.commit()
     conn.close()
 
+    return redirect("/")
+
+@app.route("/update/<int:id>/<status>")
+def update_status(id, status):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE incidents SET status=? WHERE id=?", (status, id))
+    conn.commit()
+    conn.close()
     return redirect("/")
 
 if __name__ == "__main__":
