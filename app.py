@@ -9,12 +9,15 @@ def init_db():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS incidents (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT
-    )
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS incidents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    status TEXT,
+    tipo TEXT,
+    prioridad TEXT
+)
+""")
     """)
 
     conn.commit()
