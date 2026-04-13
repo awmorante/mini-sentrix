@@ -9,21 +9,23 @@ def init_db():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS incidents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    status TEXT,
-    tipo TEXT,
-    prioridad TEXT
-)
-""")
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS incidents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        status TEXT,
+        tipo TEXT,
+        prioridad TEXT
+    )
     """)
 
     conn.commit()
     conn.close()
 
-init_db()
+
+@app.before_first_request
+def setup():
+    init_db()
 
 def get_db():
     return sqlite3.connect("database.db")
