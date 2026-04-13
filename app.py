@@ -5,6 +5,23 @@ import json
 
 app = Flask(__name__)
 
+def init_db():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS incidents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        description TEXT
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+init_db()
+
 def get_db():
     return sqlite3.connect("database.db")
 
