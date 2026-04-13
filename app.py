@@ -1,23 +1,53 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+import requests
+import json
 
 app = Flask(__name__)
 
 def get_db():
     return sqlite3.connect("database.db")
 
-# 🔥 CLASIFICACIÓN BIEN HECHA
 def clasificar_incidente(texto):
-    texto = texto.lower()
+    prompt = f"""
+    Clasificá este incidente IT en:
+    tipo (red, servidor, base de datos, hardware, otro)
+    prioridad (baja, media, alta)
 
-    if "sql" in texto or "db" in texto or "base de datos" in texto:
-        return "base de datos", "alta"
-    elif "red" in texto or "internet" in texto:
-        return "red", "media"
-    elif "server" in texto or "servidor" in texto:
-        return "servidor", "alta"
-    else:
-        return "otro", "baja"
+    Incidente: {texto}
+
+    Respondé SOLO en JSON válido así:
+
+    {{
+      "tipo": "red | servidor | base de datos | hardware | otro",
+      "prioridad": "baja | media | alta"
+    }}
+    """
+
+    response = requests.post(
+        "http://localhost:1234/v1/chat/completions",
+        json={
+            "model": "phi-3-mini-128k-instruct-imatrix-smashed",
+            "messages": [
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.2
+        }
+    )
+
+    data = response.json()
+    texto_respuesta = data["choices"][0]["message"]["content"]
+
+    # 🔥 PARSEO PRO
+    try:
+        resultado = json.loads(texto_respuesta)
+        tipo = resultado.get("tipo", "otro")
+        prioridad = resultado.get("prioridad", "baja")
+    except:
+        tipo = "otro"
+        prioridad = "baja"
+
+    return tipo, prioridad
 
 @app.route("/")
 def index():
