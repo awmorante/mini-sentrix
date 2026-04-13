@@ -22,10 +22,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-
-@app.before_first_request
-def setup():
-    init_db()
+init_db()
 
 def get_db():
     return sqlite3.connect("database.db")
