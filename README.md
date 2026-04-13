@@ -1,22 +1,46 @@
-# Mini Sentrix - Sistema de Gestión Operativa
+# 🛠 Mini Sentrix - Sistema de Gestión de Incidentes con IA
 
-Proyecto inspirado en sistemas de gestión de activos e incidentes utilizados en entornos corporativos.
+Aplicación web para registrar y gestionar incidentes IT con clasificación automática utilizando inteligencia artificial local.
 
-## Funcionalidades actuales
-- Registro de incidentes
-- Estado de incidentes
-- Backend en Python (Flask)
-- Base de datos SQLite
+---
 
-## Próximas mejoras
-- Clasificación automática de incidentes con IA
-- Gestión de activos
-- Panel de control
+## 🚀 Features
 
-## Stack
+- Alta de incidentes
+- Gestión de estados (abierto, en proceso, cerrado)
+- Clasificación automática con IA (tipo y prioridad)
+- Motor de IA local usando LM Studio (sin costo)
+- Reglas adicionales para mejorar consistencia
+- Interfaz simple con colores por prioridad
+
+---
+
+## 🧠 Tecnologías
+
 - Python
 - Flask
 - SQLite
+- LM Studio (LLM local)
+- Modelo: Phi-3 Mini
 
-## Autor
-Alberto Morante
+---
+
+## 🤖 IA
+
+El sistema utiliza un modelo local (Phi-3 Mini) ejecutado vía LM Studio, utilizando una API compatible con OpenAI.
+
+Se aplica:
+
+- Prompt engineering
+- Respuesta estructurada en JSON
+- Validación mediante reglas propias
+
+---
+
+## ⚙️ Instalación
+
+```bash
+git clone https://github.com/awmorante/mini-sentrix.git
+cd mini-sentrix
+pip install -r requirements.txt
+python app.py
